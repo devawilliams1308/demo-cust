@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-customerData-deployment
+spec:
+  selector:
+    matchLabels:
+      app: demo-cust
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: demo-cust
+    spec:
+      containers:
+        - name: demo-cust
+          image: demo-cust:1.0
+          ports:
+            - containerPort: 8089
+          env:
+            - name: DB_HOST
+              value : mysql
+            - name: DB_NAME
+              value: customerData
+            - name: DB_USERNAME
+              value : root
+            - name: DB_PASSWORD
+              value : root
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: springboot-customerData-svc
+spec:
+  selector:
+    app: demo-cust
+  ports:
+    - protocol: "TCP"
+      port: 8089
+      targetPort: 8089
+  type: NodePort
+
